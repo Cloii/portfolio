@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ✏️ EDIT: Page title -->
+  <title>My Portfolio</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+</head>
+
+<body>
+
+  <!-- =============================================
+       NAVBAR
+       ============================================= -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+
+      <!-- ✏️ EDIT: Your initials -->
+      <a href="#hero" class="navbar__logo">BC</a>
+
+      <ul class="navbar__links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </nav>
+
+
+  <!-- =============================================
+       HERO
+       ============================================= -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero__content">
+
+        <p class="hero__greeting">Hello! </p>
+
+        <h1 class="hero__title">
+          Hi, my name is<br />
+          <span class="text-gradient">Bil Clinth Dulalas</span>
+        </h1>
+
+        <p class="hero__subtitle">
+          I'm the Unknown Developer. 
+        </p>
+
+        <div class="hero__cta">
+          <a href="#about" class="cta-btn cta-btn--hero">Know more</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =============================================
+       ABOUT
+       ============================================= -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title reveal">About me</h2>
+
+      <div class="about__grid">
+
+        <div class="about__image-wrap reveal">
+          <img
+            src="https://pbs.twimg.com/media/HGgMI82WYAEYWgo?format=jpg&name=medium"
+            alt="Profile photo"
+          />
+        </div>
+
+        <div class="about__text reveal">
+          <h3>Who am I?</h3>
+
+          <p>
+  <p>
+  Hey, I'm <strong>Bil Clinth</strong>  a junior developer from the Philippines 
+  who's genuinely passionate about building things that matter. I'm always curious, 
+  always learning, and always looking for the next problem worth solving. 
+</p>
+<p>
+  I've shipped real projects using <strong>Flutter</strong>, <strong>C#</strong>,
+  <strong>C++</strong>, and <strong>JavaScript</strong>, and each one pushed me 
+  further than the last. I'm still early in this journey, but I show up, I care 
+  about the craft, and I'm always looking to grow, one project at a time.
+</p>
+          <!-- Tech Stack -->
+          <div class="about__stack">
+            <p class="about__stack-label">Tech Stack</p>
+            <div class="about__tags">
+              <span class="about__tag">Dart / Flutter</span>
+              <span class="about__tag">JavaScript</span>
+              <span class="about__tag">C#</span>
+              <span class="about__tag">C++</span>
+              <span class="about__tag">Machine Vision</span>
+              <span class="about__tag">WinForms</span>
+              <span class="about__tag">Firebase</span>
+              <span class="about__tag">Git & GitHub</span>
+            </div>
+          </div>
+
+          <a href="/assets/resume.pdf" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">
+            View Resume
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Inline styles scoped only to the tech stack tags — no other UI is touched -->
+  <style>
+    .about__stack { margin: 1.4rem 0 1.8rem; }
+    .about__stack-label {
+      font-size: 0.88rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      margin-bottom: 0.75rem;
+    }
+    .about__tags { display: flex; flex-wrap: wrap; gap: 12px; }
+    .about__tag {
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      border-radius: 2px;
+      border: 1px solid rgba(0, 212, 200, 0.35);
+      color: #00d4c8;
+      background: rgba(0, 212, 200, 0.08);
+    }
+  </style>
+
+
+  <!-- =============================================
+       PROJECTS
+       ============================================= -->
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title reveal">Projects</h2>
+
+      <!-- PROJECT 1 -->
+      <article class="project-card reveal">
+        <div class="project__info">
+          <div class="project__number">01</div>
+          <h3 class="project__title">Health Habit Tracker</h3>
+          <p class="project__desc">
+            A cross-platform Flutter app for building and tracking daily healthy habits.
+            Features streak tracking, visual statistics with fl_chart, dark/light mode,
+            multi-profile support, and local data persistence via Hive, all wrapped in
+            a clean Material Design 3 interface.
+          </p>
+          <div class="project__links">
+            <a href="#!" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
+            <a href="https://github.com/Cloii/HEALTH-HABIT-TRACKER" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
+          </div>
+        </div>
+        <div class="project__img-wrap">
+          <a href="#!" target="_blank" rel="noreferrer">
+            <img src="assets/project1.jpg" alt="Health Habit Tracker screenshot" />
+          </a>
+        </div>
+      </article>
+
+      <!-- PROJECT 2 -->
+      <article class="project-card reveal">
+        <div class="project__info">
+          <div class="project__number">02</div>
+          <h3 class="project__title">Shape Detector & Image Editor</h3>
+          <p class="project__desc">
+            A machine vision desktop application built in C++ that detects geometric
+            shapes in real time using computer vision techniques. Includes image editing
+            tools for applying filters, transformations, and annotations, blending low-level
+            vision algorithms with a practical interactive interface.
+          </p>
+          <div class="project__links">
+            <a href="#!" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
+            <a href="https://github.com/Cloii/Machine-vision-Image-editor" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
+          </div>
+        </div>
+        <div class="project__img-wrap">
+          <a href="#!" target="_blank" rel="noreferrer">
+            <img src="assets/project2.jpg" alt="Shape Detector screenshot" />
+          </a>
+        </div>
+      </article>
+
+      <!-- PROJECT 3 -->
+      <article class="project-card reveal">
+        <div class="project__info">
+          <div class="project__number">03</div>
+          <h3 class="project__title">Brewly — Point of Sale System</h3>
+          <p class="project__desc">
+            A Windows desktop POS system built with C# and WinForms, designed for small
+            café and beverage businesses. Handles order management, product inventory,
+            billing, and sales reporting, demonstrating solid understanding of desktop
+            application architecture and database integration.
+          </p>
+          <div class="project__links">
+            <a href="#!" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
+            <a href="https://github.com/Cloii/BrewlyWinForms" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
+          </div>
+        </div>
+        <div class="project__img-wrap">
+          <a href="#!" target="_blank" rel="noreferrer">
+            <img src="assets/project3.jpg" alt="Brewly POS screenshot" />
+          </a>
+        </div>
+      </article>
+
+      <!-- PROJECT 4 -->
+      <article class="project-card reveal">
+        <div class="project__info">
+          <div class="project__number">04</div>
+          <h3 class="project__title">Virtual Mouse</h3>
+          <p class="project__desc">
+            A hands-free virtual mouse controller that uses computer vision and hand
+            gesture recognition to move the cursor and perform clicks without touching
+            any hardware. Built in C++ using real-time webcam input, a fun exploration
+            of human-computer interaction through machine vision.
+          </p>
+          <div class="project__links">
+            <a href="#!" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
+            <a href="https://github.com/Cloii/Virtual-mouse" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
+          </div>
+        </div>
+        <div class="project__img-wrap">
+          <a href="#!" target="_blank" rel="noreferrer">
+            <img src="assets/project4.jpg" alt="Virtual Mouse screenshot" />
+          </a>
+        </div>
+      </article>
+
+      <!-- PROJECT 5 -->
+      <article class="project-card reveal">
+        <div class="project__info">
+          <div class="project__number">05</div>
+          <h3 class="project__title">University Marketplace</h3>
+          <p class="project__desc">
+            A full-stack web marketplace built for university students to buy, sell, and
+            trade items within their campus community. Developed with JavaScript and
+            deployed live on Vercel, featuring product listings, search, and a clean,
+            responsive UI tailored for student use.
+          </p>
+          <div class="project__links">
+            <a href="https://ubthrifty.vercel.app/" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
+            <a href="https://github.com/Cloii/uni-marketplace" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
+          </div>
+        </div>
+        <div class="project__img-wrap">
+          <a href="https://ubthrifty.vercel.app/" target="_blank" rel="noreferrer">
+            <img src="assets/project5.jpg" alt="University Marketplace screenshot" />
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+
+  <!-- =============================================
+       CONTACT
+       ============================================= -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title reveal">Contact</h2>
+
+      <p class="contact__text reveal">
+        I'm currently open to new opportunities. Whether you have a question, a project
+        idea, or just want to say hi — my inbox is always open!
+      </p>
+
+      <div class="reveal">
+        <a href="mailto:bilclinthd@gmail.com" class="cta-btn cta-btn--resume">Say Hello</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =============================================
+       FOOTER
+       ============================================= -->
+  <footer>
+    <div class="container">
+
+      <div class="footer__social">
+        <a href="#" target="_blank" rel="noreferrer" aria-label="Twitter / X">
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+        <a href="#" target="_blank" rel="noreferrer" aria-label="Discord">
+          <i class="fa-brands fa-discord"></i>
+        </a>
+        <a href="https://github.com/Cloii" target="_blank" rel="noreferrer" aria-label="GitHub">
+          <i class="fa-brands fa-github"></i>
+        </a>
+        <a href="#" target="_blank" rel="noreferrer" aria-label="Telegram">
+          <i class="fa-brands fa-telegram"></i>
+        </a>
+      </div>
+
+      <p class="footer__copy">
+        &copy; <span id="year"></span> — Designed &amp; Built by
+        <a href="#hero">Bil Clinth</a>
+      </p>
+
+    </div>
+  </footer>
+
+
+  <!-- Vite entry point — DO NOT remove -->
+  <script type="module" src="/src/main.ts"></script>
+
+</body>
+</html>
