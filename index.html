@@ -3,110 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- ✏️ EDIT: Page title -->
   <title>My Portfolio</title>
-
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap"
-    rel="stylesheet"
-  />
-
-  <!-- Font Awesome -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
-
 <body>
 
-  <!-- =============================================
-       NAVBAR
-       ============================================= -->
   <nav class="navbar" id="navbar">
     <div class="container">
-
-      <!-- ✏️ EDIT: Your initials -->
       <a href="#hero" class="navbar__logo">BC</a>
-
       <ul class="navbar__links" id="navLinks">
         <li><a href="#about">About</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
-
       <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
-
     </div>
   </nav>
 
-
-  <!-- =============================================
-       HERO
-       ============================================= -->
   <section id="hero">
     <div class="container">
       <div class="hero__content">
-
         <p class="hero__greeting">Hello! </p>
-
         <h1 class="hero__title">
           Hi, my name is<br />
           <span class="text-gradient">Bil Clinth Dulalas</span>
         </h1>
-
-        <p class="hero__subtitle">
-          I'm the Unknown Developer. 
-        </p>
-
+        <p class="hero__subtitle">I'm the Unknown Developer.</p>
         <div class="hero__cta">
           <a href="#about" class="cta-btn cta-btn--hero">Know more</a>
         </div>
-
       </div>
     </div>
   </section>
 
-
-  <!-- =============================================
-       ABOUT
-       ============================================= -->
   <section id="about">
     <div class="container">
       <h2 class="section-title reveal">About me</h2>
-
       <div class="about__grid">
 
         <div class="about__image-wrap reveal">
-          <img
-            src="https://pbs.twimg.com/media/HGgMI82WYAEYWgo?format=jpg&name=medium"
-            alt="Profile photo"
-          />
+          <img src="https://pbs.twimg.com/media/HGgMI82WYAEYWgo?format=jpg&name=medium" alt="Profile photo" />
         </div>
 
         <div class="about__text reveal">
           <h3>Who am I?</h3>
 
           <p>
-  <p>
-  Hey, I'm <strong>Bil Clinth</strong>  a junior developer from the Philippines 
-  who's genuinely passionate about building things that matter. I'm always curious, 
-  always learning, and always looking for the next problem worth solving. 
-</p>
-<p>
-  I've shipped real projects using <strong>Flutter</strong>, <strong>C#</strong>,
-  <strong>C++</strong>, and <strong>JavaScript</strong>, and each one pushed me 
-  further than the last. I'm still early in this journey, but I show up, I care 
-  about the craft, and I'm always looking to grow, one project at a time.
-</p>
+            Hey, I'm <strong>Bil Clinth</strong>  a junior developer from the Philippines
+            who's genuinely passionate about building things that matter. I'm always curious,
+            always learning, and always looking for the next problem worth solving.
+          </p>
+          <p>
+            I've shipped real projects using <strong>Flutter</strong>, <strong>C#</strong>,
+            <strong>C++</strong>, and <strong>JavaScript</strong>, and each one pushed me
+            further than the last. I'm still early in this journey, but I show up, I care
+            about the craft, and I'm always looking to grow, one project at a time.
+          </p>
+
+          <!-- ── Stats row ── -->
+          <div class="about__stats">
+            <div class="about__stat">
+              <span class="about__stat-num">6+</span>
+              <span class="about__stat-desc">Projects Built</span>
+            </div>
+            <div class="about__stat">
+              <span class="about__stat-num">4+</span>
+              <span class="about__stat-desc">Languages Used</span>
+            </div>
+            <div class="about__stat">
+              <span class="about__stat-num">&#x221E;</span>
+              <span class="about__stat-desc">Things to Learn</span>
+            </div>
+          </div>
+
           <!-- Tech Stack -->
           <div class="about__stack">
             <p class="about__stack-label">Tech Stack</p>
@@ -118,7 +92,7 @@
               <span class="about__tag">Machine Vision</span>
               <span class="about__tag">WinForms</span>
               <span class="about__tag">Firebase</span>
-              <span class="about__tag">Git & GitHub</span>
+              <span class="about__tag">Git &amp; GitHub</span>
             </div>
           </div>
 
@@ -131,7 +105,6 @@
     </div>
   </section>
 
-  <!-- Inline styles scoped only to the tech stack tags — no other UI is touched -->
   <style>
     .about__stack { margin: 1.4rem 0 1.8rem; }
     .about__stack-label {
@@ -153,17 +126,42 @@
       color: #00d4c8;
       background: rgba(0, 212, 200, 0.08);
     }
+    .about__stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 1.6rem 0;
+    }
+    .about__stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 16px 8px;
+      border: 1px solid rgba(0, 212, 200, 0.18);
+      border-radius: 4px;
+      background: rgba(0, 212, 200, 0.05);
+      text-align: center;
+    }
+    .about__stat-num {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.75rem;
+      color: #00d4c8;
+      line-height: 1;
+    }
+    .about__stat-desc {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.55;
+    }
   </style>
 
-
-  <!-- =============================================
-       PROJECTS
-       ============================================= -->
   <section id="projects">
     <div class="container">
       <h2 class="section-title reveal">Projects</h2>
 
-      <!-- PROJECT 1 -->
       <article class="project-card reveal">
         <div class="project__info">
           <div class="project__number">01</div>
@@ -186,11 +184,10 @@
         </div>
       </article>
 
-      <!-- PROJECT 2 -->
       <article class="project-card reveal">
         <div class="project__info">
           <div class="project__number">02</div>
-          <h3 class="project__title">Shape Detector & Image Editor</h3>
+          <h3 class="project__title">Shape Detector &amp; Image Editor</h3>
           <p class="project__desc">
             A machine vision desktop application built in C++ that detects geometric
             shapes in real time using computer vision techniques. Includes image editing
@@ -209,7 +206,6 @@
         </div>
       </article>
 
-      <!-- PROJECT 3 -->
       <article class="project-card reveal">
         <div class="project__info">
           <div class="project__number">03</div>
@@ -232,7 +228,6 @@
         </div>
       </article>
 
-      <!-- PROJECT 4 -->
       <article class="project-card reveal">
         <div class="project__info">
           <div class="project__number">04</div>
@@ -255,7 +250,6 @@
         </div>
       </article>
 
-      <!-- PROJECT 5 -->
       <article class="project-card reveal">
         <div class="project__info">
           <div class="project__number">05</div>
@@ -281,32 +275,21 @@
     </div>
   </section>
 
-
-  <!-- =============================================
-       CONTACT
-       ============================================= -->
   <section id="contact">
     <div class="container">
       <h2 class="section-title reveal">Contact</h2>
-
       <p class="contact__text reveal">
         I'm currently open to new opportunities. Whether you have a question, a project
         idea, or just want to say hi — my inbox is always open!
       </p>
-
       <div class="reveal">
         <a href="mailto:bilclinthd@gmail.com" class="cta-btn cta-btn--resume">Say Hello</a>
       </div>
     </div>
   </section>
 
-
-  <!-- =============================================
-       FOOTER
-       ============================================= -->
   <footer>
     <div class="container">
-
       <div class="footer__social">
         <a href="#" target="_blank" rel="noreferrer" aria-label="Twitter / X">
           <i class="fa-brands fa-x-twitter"></i>
@@ -321,15 +304,12 @@
           <i class="fa-brands fa-telegram"></i>
         </a>
       </div>
-
       <p class="footer__copy">
         &copy; <span id="year"></span> — Designed &amp; Built by
         <a href="#hero">Bil Clinth</a>
       </p>
-
     </div>
   </footer>
-
 
   <!-- Vite entry point — DO NOT remove -->
   <script type="module" src="/src/main.ts"></script>
