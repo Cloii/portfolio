@@ -3,21 +3,541 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Portfolio</title>
+  <title>Bil Clinth Dulalas — Developer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #02aab0;
+      --secondary: #00cdac;
+      --dark-bg: #090d12;
+      --section-bg: #0e1620;
+      --card-bg: #111920;
+      --text-light: #e8f4f8;
+      --text-muted: #8faab8;
+      --font-display: 'Montserrat', sans-serif;
+      --font-body: 'Source Sans 3', sans-serif;
+      --gradient: linear-gradient(135deg, #02aab0, #00cdac);
+      --glow: 0 0 24px rgba(2,170,176,0.35), 0 0 60px rgba(2,170,176,0.1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 62.5%; }
+    body {
+      font-family: var(--font-body);
+      font-size: 1.6rem;
+      background: var(--dark-bg);
+      color: var(--text-light);
+      overflow-x: hidden;
+      cursor: none;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ── CUSTOM CURSOR ── */
+    .cursor-dot, .cursor-ring {
+      position: fixed; pointer-events: none; z-index: 99999;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-dot {
+      width: 8px; height: 8px;
+      background: var(--primary); border-radius: 50%;
+      box-shadow: 0 0 14px rgba(2,170,176,0.9);
+      transition: width .15s, height .15s, background .15s;
+    }
+    .cursor-ring {
+      width: 38px; height: 38px;
+      border: 2px solid rgba(2,170,176,0.55);
+      border-radius: 50%;
+      transition: width .35s cubic-bezier(.25,1,.5,1), height .35s cubic-bezier(.25,1,.5,1),
+                  border-color .35s, opacity .35s;
+    }
+    .cursor-dot.hover  { width: 14px; height: 14px; background: var(--secondary); }
+    .cursor-ring.hover { width: 64px; height: 64px; border-color: rgba(2,170,176,0.25); }
+    .cursor-dot.click  { width: 6px; height: 6px; }
+
+    /* ── SCROLL PROGRESS ── */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0;
+      background: var(--gradient);
+      z-index: 99998; box-shadow: var(--glow);
+    }
+
+    /* ── UTILITIES ── */
+    .container { width: 90%; max-width: 1100px; margin: 0 auto; }
+    .text-gradient {
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .section-title {
+      font-family: var(--font-display); font-size: 3.5rem; font-weight: 900;
+      text-transform: uppercase; letter-spacing: .2rem;
+      text-align: center; margin-bottom: 5rem; position: relative;
+    }
+    .section-title::after {
+      content: ''; display: block; width: 6rem; height: 4px;
+      background: var(--gradient); margin: 1.5rem auto 0;
+      border-radius: 2px; box-shadow: var(--glow);
+    }
+
+    /* ── BUTTONS ── */
+    .cta-btn {
+      display: inline-block; padding: 1.2rem 3rem;
+      font-family: var(--font-display); font-size: 1.4rem; font-weight: 700;
+      letter-spacing: .15rem; text-transform: uppercase;
+      border-radius: 4px; cursor: none; position: relative; overflow: hidden;
+      transition: all .3s ease;
+    }
+    .cta-btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,.08);
+      transform: translateX(-110%) skewX(-20deg);
+      transition: transform .45s ease;
+    }
+    .cta-btn:hover::after { transform: translateX(110%) skewX(-20deg); }
+    .cta-btn--hero {
+      background: transparent; border: 2px solid var(--primary); color: var(--primary);
+    }
+    .cta-btn--hero:hover {
+      background: var(--gradient); border-color: transparent;
+      color: #fff; transform: translateY(-3px); box-shadow: var(--glow);
+    }
+    .cta-btn--resume {
+      background: var(--gradient); border: 2px solid transparent; color: #fff;
+    }
+    .cta-btn--resume:hover {
+      background: transparent; border-color: var(--primary);
+      color: var(--primary); transform: translateY(-3px); box-shadow: var(--glow);
+    }
+    /* ripple */
+    .ripple {
+      position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,.25);
+      animation: ripple-anim .55s linear forwards;
+      pointer-events: none; transform: scale(0);
+    }
+    @keyframes ripple-anim { to { transform: scale(5); opacity: 0; } }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      padding: 1.6rem 0; transition: background .3s, box-shadow .3s;
+    }
+    .navbar.scrolled {
+      background: rgba(9,13,18,.96);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 32px rgba(0,0,0,.6), 0 1px 0 rgba(2,170,176,.12);
+    }
+    .navbar .container { display: flex; align-items: center; justify-content: space-between; }
+    .navbar__logo {
+      font-family: var(--font-display); font-size: 2rem; font-weight: 900;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 8px rgba(2,170,176,.5));
+    }
+    .navbar__links { display: flex; gap: 3rem; list-style: none; }
+    .navbar__links a {
+      font-size: 1.4rem; font-weight: 600; letter-spacing: .1rem;
+      text-transform: uppercase; color: var(--text-muted);
+      transition: color .3s; position: relative; cursor: none;
+    }
+    .navbar__links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px; background: var(--gradient);
+      transition: width .3s; box-shadow: var(--glow);
+    }
+    .navbar__links a:hover, .navbar__links a.active { color: #fff; }
+    .navbar__links a.active::after, .navbar__links a:hover::after { width: 100%; }
+    .navbar__hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: none; background: none; border: none; padding: 4px;
+    }
+    .navbar__hamburger span {
+      display: block; width: 25px; height: 2px;
+      background: var(--text-muted); border-radius: 2px; transition: all .3s;
+    }
+    .navbar__hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+    .navbar__hamburger.open span:nth-child(2) { opacity: 0; transform: translateX(-10px); }
+    .navbar__hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+    /* ── SPACE CANVAS ── */
+    #spaceCanvas {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* ── PARALLAX DECORATIVE LAYERS ── */
+    .parallax-layer { position: absolute; inset: 0; pointer-events: none; will-change: transform; }
+    .parallax-layer--slow::before {
+      content: ''; position: absolute; width: 70vmax; height: 70vmax; border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      border: 1px solid rgba(2,170,176,.06);
+      background: radial-gradient(circle, rgba(2,170,176,.04) 0%, transparent 65%);
+    }
+    .parallax-layer--mid::after {
+      content: ''; position: absolute; width: 40vmax; height: 40vmax; border-radius: 50%;
+      top: 30%; right: -8%;
+      border: 1px solid rgba(2,170,176,.05);
+      background: radial-gradient(circle, rgba(0,205,172,.06) 0%, transparent 60%);
+    }
+    .parallax-layer--fast::before {
+      content: ''; position: absolute; width: 24vmax; height: 24vmax; border-radius: 50%;
+      bottom: 10%; left: 5%;
+      background: radial-gradient(circle, rgba(2,100,140,.08) 0%, transparent 65%);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh; display: flex; align-items: center;
+      position: relative; overflow: hidden; z-index: 1;
+    }
+    .hero__content {
+      padding: 12rem 0 8rem; position: relative; z-index: 2; will-change: transform;
+    }
+    .hero__greeting {
+      font-size: 2rem; color: var(--primary); margin-bottom: 1.5rem;
+      letter-spacing: .2rem; text-transform: uppercase;
+      opacity: 0; animation: fadeUp .8s ease forwards .2s;
+      text-shadow: 0 0 20px rgba(2,170,176,.5);
+    }
+    .hero__title {
+      font-family: var(--font-display); font-size: clamp(4rem, 8vw, 7rem);
+      font-weight: 900; line-height: 1.1; margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp .8s ease forwards .4s;
+    }
+
+    /* Glitch on name hover */
+    .glitch { position: relative; display: inline-block; }
+    .glitch::before, .glitch::after {
+      content: attr(data-text); position: absolute; top: 0; left: 0;
+      background: var(--gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+      opacity: 0; transition: opacity .1s;
+    }
+    .glitch:hover::before {
+      opacity: .75; clip-path: polygon(0 0,100% 0,100% 42%,0 42%);
+      animation: glitch-top .25s steps(1) infinite;
+    }
+    .glitch:hover::after {
+      opacity: .75; clip-path: polygon(0 58%,100% 58%,100% 100%,0 100%);
+      animation: glitch-bot .25s steps(1) infinite;
+    }
+    @keyframes glitch-top {
+      0%   { transform: translate(-3px,0); } 25% { transform: translate(3px,0); }
+      50%  { transform: translate(-1px,1px); } 75% { transform: translate(1px,-1px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes glitch-bot {
+      0%   { transform: translate(3px,0); } 25% { transform: translate(-3px,0); }
+      50%  { transform: translate(1px,-1px); } 75% { transform: translate(-1px,1px); }
+      100% { transform: translate(0,0); }
+    }
+
+    .hero__subtitle-wrap {
+      font-size: 2.2rem; font-weight: 300; color: var(--text-muted);
+      margin-bottom: 4rem; max-width: 60rem; line-height: 1.6;
+      opacity: 0; animation: fadeUp .8s ease forwards .6s;
+      min-height: 4rem;
+    }
+    .typewriter-text { color: var(--primary); font-weight: 600; }
+    .typewriter-cursor {
+      color: var(--primary); animation: blink .7s step-end infinite;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero__cta {
+      display: flex; gap: 1.5rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp .8s ease forwards .8s;
+    }
+
+    .scroll-hint {
+      position: absolute; bottom: 3.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .8rem;
+      opacity: 0; animation: fadeUp 1s ease forwards 1.3s; z-index: 2;
+    }
+    .scroll-hint__label {
+      font-size: 1.1rem; letter-spacing: .2rem; text-transform: uppercase;
+      color: var(--text-muted); opacity: .5;
+    }
+    .scroll-hint__bar {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--primary), transparent);
+      animation: scrollbar 1.6s ease infinite;
+    }
+    @keyframes scrollbar {
+      0%  { transform: scaleY(0); transform-origin: top;    opacity:1; }
+      50% { transform: scaleY(1); transform-origin: top;    opacity:1; }
+      51% { transform: scaleY(1); transform-origin: bottom; opacity:1; }
+      100%{ transform: scaleY(0); transform-origin: bottom; opacity:0; }
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      padding: 10rem 0; background: var(--section-bg);
+      position: relative; z-index: 2;
+    }
+    #about::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(9,13,18,.6) 0%, var(--section-bg) 12%);
+      pointer-events: none;
+    }
+    .about__grid {
+      display: grid; grid-template-columns: 1fr 1.5fr; gap: 6rem;
+      align-items: center; position: relative;
+    }
+    .about__image-wrap { position: relative; }
+    .about__image-wrap::before {
+      content: ''; position: absolute; inset: -1.5rem;
+      border: 2px solid var(--primary); border-radius: 6px;
+      opacity: .3; z-index: 0; transition: opacity .3s, box-shadow .3s;
+      box-shadow: 0 0 30px rgba(2,170,176,.15);
+    }
+    .about__image-wrap:hover::before { opacity: .7; box-shadow: var(--glow); }
+    .about__image-wrap img {
+      position: relative; z-index: 1; border-radius: 4px;
+      width: 100%; max-width: 320px; margin: 0 auto;
+      filter: grayscale(20%); transition: filter .3s;
+    }
+    .about__image-wrap:hover img { filter: grayscale(0%); }
+    .about__text h3 {
+      font-family: var(--font-display); font-size: 2rem; font-weight: 700;
+      color: var(--primary); text-transform: uppercase; letter-spacing: .15rem;
+      margin-bottom: 2rem; text-shadow: 0 0 16px rgba(2,170,176,.4);
+    }
+    .about__text p {
+      font-size: 1.7rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem;
+    }
+    .about__stats {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 1.6rem 0;
+    }
+    .about__stat {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 16px 8px; border: 1px solid rgba(2,170,176,.15); border-radius: 6px;
+      background: rgba(2,170,176,.04); text-align: center; transition: all .3s;
+    }
+    .about__stat:hover {
+      border-color: rgba(2,170,176,.45); background: rgba(2,170,176,.09);
+      box-shadow: 0 0 18px rgba(2,170,176,.15);
+    }
+    .about__stat-num {
+      font-family: var(--font-display); font-weight: 900; font-size: 2rem;
+      color: var(--primary); line-height: 1; text-shadow: 0 0 14px rgba(2,170,176,.5);
+    }
+    .about__stat-desc {
+      font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; opacity: .55;
+    }
+    .about__stack { margin: 1.4rem 0 1.8rem; }
+    .about__stack-label {
+      font-size: .88rem; letter-spacing: .18em; text-transform: uppercase; opacity: .55; margin-bottom: .75rem;
+    }
+    .about__tags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .about__tag {
+      font-size: .88rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      padding: 8px 16px; border-radius: 3px;
+      border: 1px solid rgba(2,170,176,.3); color: var(--primary); background: rgba(2,170,176,.07);
+      transition: all .25s ease; cursor: none;
+    }
+    .about__tag:hover {
+      background: rgba(2,170,176,.18); border-color: rgba(2,170,176,.7);
+      box-shadow: 0 0 12px rgba(2,170,176,.25); transform: translateY(-2px);
+    }
+
+    /* ── PROJECTS ── */
+    #projects {
+      padding: 10rem 0; background: var(--dark-bg);
+      position: relative; z-index: 2;
+    }
+    #projects::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 30% at 80% 20%, rgba(2,170,176,.04) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 25% at 15% 75%, rgba(0,205,172,.03) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* ── FILTER TABS ── */
+    .project-filter {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 5rem;
+    }
+    .filter-btn {
+      padding: .8rem 2.2rem;
+      font-family: var(--font-display); font-size: 1.2rem; font-weight: 700;
+      letter-spacing: .1rem; text-transform: uppercase;
+      border: 1px solid rgba(2,170,176,.3); border-radius: 30px;
+      background: transparent; color: var(--text-muted); cursor: none;
+      transition: all .3s; position: relative; overflow: hidden;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--gradient); border-color: transparent;
+      color: #fff; box-shadow: var(--glow);
+    }
+
+    .project-card {
+      display: grid; grid-template-columns: 1fr 1.8fr; gap: 4rem;
+      align-items: center; margin-bottom: 8rem; position: relative;
+      transition: opacity .5s, transform .5s;
+    }
+    .project-card.hidden { display: none; }
+    .project-card:last-child { margin-bottom: 0; }
+    .project-card:nth-child(odd) { direction: ltr; }
+    .project-card:nth-child(even) { direction: rtl; }
+    .project-card:nth-child(even) > * { direction: ltr; }
+
+    .project__number {
+      font-family: var(--font-display); font-size: 8rem; font-weight: 900; line-height: 1;
+      color: rgba(2,170,176,.06); margin-bottom: -2rem; user-select: none;
+    }
+    .project__title {
+      font-family: var(--font-display); font-size: 2.4rem; font-weight: 700;
+      margin-bottom: 1.5rem; transition: color .3s;
+    }
+    .project-card:hover .project__title { color: var(--primary); }
+    .project__desc {
+      font-size: 1.6rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem;
+    }
+    .project__stack { display: flex; flex-wrap: wrap; gap: 8px; margin: .6rem 0 1.6rem; }
+    .project__tag {
+      font-size: .82rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 7px 14px; border-radius: 3px;
+      border: 1px solid rgba(2,170,176,.28); color: var(--primary); background: rgba(2,170,176,.06);
+      transition: all .25s ease;
+    }
+    .project__tag:hover {
+      background: rgba(2,170,176,.16); border-color: rgba(2,170,176,.65);
+      box-shadow: 0 0 10px rgba(2,170,176,.2);
+    }
+    .project__links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    /* 3D tilt wrapper */
+    .project__img-wrap {
+      border-radius: 8px; overflow: hidden;
+      box-shadow: 0 2rem 5rem rgba(0,0,0,.6), 0 0 0 1px rgba(2,170,176,.08);
+      transition: box-shadow .4s ease;
+      position: relative; transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .project__img-wrap::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(2,170,176,.12), rgba(0,205,172,.04));
+      opacity: 0; transition: opacity .35s; pointer-events: none;
+    }
+    .project__img-wrap:hover { box-shadow: 0 3rem 6rem rgba(0,0,0,.7), var(--glow); }
+    .project__img-wrap:hover::after { opacity: 1; }
+    .project__img-wrap img {
+      width: 100%; height: 280px; object-fit: cover; display: block;
+      transition: transform .4s ease; pointer-events: none;
+    }
+
+    /* Demo badge */
+    .demo-badge {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      background: var(--gradient); color: #fff;
+      font-family: var(--font-display); font-size: 1rem; font-weight: 700;
+      letter-spacing: .1rem; padding: .5rem 1.2rem; border-radius: 20px;
+      text-transform: uppercase; z-index: 3;
+      box-shadow: var(--glow);
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      padding: 10rem 0; background: var(--section-bg);
+      text-align: center; position: relative; z-index: 2;
+    }
+    #contact::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(2,170,176,.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .contact__text {
+      font-size: 2rem; color: var(--text-muted);
+      margin: 0 auto 3rem; max-width: 60rem; line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #060a0f; padding: 4rem 0;
+      text-align: center; position: relative; z-index: 2;
+      border-top: 1px solid rgba(2,170,176,.1);
+    }
+    .footer__social { display: flex; justify-content: center; gap: 2.5rem; margin-bottom: 2.5rem; }
+    .footer__social a {
+      width: 4.5rem; height: 4.5rem; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; color: var(--text-muted); transition: all .3s ease; cursor: none;
+    }
+    .footer__social a:hover {
+      background: var(--gradient); border-color: transparent; color: #fff;
+      transform: translateY(-4px); box-shadow: var(--glow);
+    }
+    .footer__copy { font-size: 1.4rem; color: rgba(255,255,255,.3); }
+    .footer__copy a { color: var(--primary); font-weight: 600; }
+    .footer__copy a:hover { text-decoration: underline; }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(3rem);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal[data-delay="1"] { transition-delay: .1s; }
+    .reveal[data-delay="2"] { transition-delay: .2s; }
+    .reveal[data-delay="3"] { transition-delay: .3s; }
+    .reveal[data-delay="4"] { transition-delay: .4s; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(3rem); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      html { font-size: 55%; }
+      body { cursor: auto; }
+      .cursor-dot, .cursor-ring { display: none; }
+      .navbar__links {
+        display: none; flex-direction: column;
+        position: absolute; top: 100%; left: 0; width: 100%;
+        background: rgba(9,13,18,.98); backdrop-filter: blur(12px);
+        padding: 2rem; gap: 2rem;
+      }
+      .navbar__links.open { display: flex; }
+      .navbar__hamburger { display: flex; }
+      .about__grid { grid-template-columns: 1fr; gap: 4rem; }
+      .about__image-wrap img { max-width: 260px; }
+      .project-card { grid-template-columns: 1fr !important; direction: ltr !important; }
+      .project-card:nth-child(even) > * { direction: ltr; }
+      .project__number { font-size: 5rem; }
+      .hero__cta { flex-direction: column; align-items: flex-start; }
+      .project-filter { gap: .7rem; }
+      .filter-btn { padding: .7rem 1.5rem; font-size: 1.1rem; }
+    }
+  </style>
 </head>
 <body>
+  <!-- Custom Cursor -->
+  <div class="cursor-dot"  id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Space Canvas -->
+  <canvas id="spaceCanvas"></canvas>
+
+  <!-- ── NAVBAR ── -->
   <nav class="navbar" id="navbar">
     <div class="container">
       <a href="#hero" class="navbar__logo">BC</a>
       <ul class="navbar__links" id="navLinks">
-        <li><a href="#about">About</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#about"    data-section="about">About</a></li>
+        <li><a href="#projects" data-section="projects">Projects</a></li>
+        <li><a href="#contact"  data-section="contact">Contact</a></li>
       </ul>
       <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
@@ -25,54 +545,53 @@
     </div>
   </nav>
 
+  <!-- ── HERO ── -->
   <section id="hero">
+    <div class="parallax-layer parallax-layer--slow" id="parallaxSlow"></div>
+    <div class="parallax-layer parallax-layer--mid"  id="parallaxMid"></div>
+    <div class="parallax-layer parallax-layer--fast" id="parallaxFast"></div>
     <div class="container">
       <div class="hero__content">
-        <p class="hero__greeting">Hello! </p>
+        <p class="hero__greeting">Hello! 👋</p>
         <h1 class="hero__title">
           Hi, my name is<br />
-          <span class="text-gradient">Bil Clinth Dulalas</span>
+          <span class="text-gradient glitch" data-text="Bil Clinth Dulalas">Bil Clinth Dulalas</span>
         </h1>
-        <p class="hero__subtitle">I'm the Unknown Developer.</p>
+        <p class="hero__subtitle-wrap">
+          I'm &nbsp;<span class="typewriter-text" id="typewriterText"></span><span class="typewriter-cursor">|</span>
+        </p>
         <div class="hero__cta">
-          <a href="#about" class="cta-btn cta-btn--hero">Know more</a>
+          <a href="#projects" class="cta-btn cta-btn--hero">View My Work</a>
+          <a href="#contact"  class="cta-btn cta-btn--resume">Get In Touch</a>
         </div>
       </div>
     </div>
+    <div class="scroll-hint">
+      <span class="scroll-hint__label">Scroll</span>
+      <div class="scroll-hint__bar"></div>
+    </div>
   </section>
 
+  <!-- ── ABOUT ── -->
   <section id="about">
     <div class="container">
       <h2 class="section-title reveal">About me</h2>
       <div class="about__grid">
-
-        <div class="about__image-wrap reveal">
-          <img src="https://pbs.twimg.com/media/HGgMI82WYAEYWgo?format=jpg&name=medium" alt="Profile photo" />
+        <div class="about__image-wrap reveal" data-delay="1">
+          <img src="https://pbs.twimg.com/media/HGgMI82WYAEYWgo?format=jpg&name=medium" alt="Bil Clinth profile photo" />
         </div>
-
-        <div class="about__text reveal">
+        <div class="about__text reveal" data-delay="2">
           <h3>Who am I?</h3>
+          <p>Hey, I'm <strong>Bil Clinth</strong> — a junior developer from the Philippines who's genuinely passionate about building things that matter. Always curious, always learning, and always looking for the next problem worth solving.</p>
+          <p>I've shipped real projects using <strong>Flutter</strong>, <strong>C#</strong>, <strong>C++</strong>, and <strong>JavaScript</strong>, and each one pushed me further than the last. I show up, I care about the craft, and I'm always looking to grow — one project at a time.</p>
 
-          <p>
-            Hey, I'm <strong>Bil Clinth</strong>  a junior developer from the Philippines
-            who's genuinely passionate about building things that matter. I'm always curious,
-            always learning, and always looking for the next problem worth solving.
-          </p>
-          <p>
-            I've shipped real projects using <strong>Flutter</strong>, <strong>C#</strong>,
-            <strong>C++</strong>, and <strong>JavaScript</strong>, and each one pushed me
-            further than the last. I'm still early in this journey, but I show up, I care
-            about the craft, and I'm always looking to grow, one project at a time.
-          </p>
-
-          <!-- ── Stats row ── -->
           <div class="about__stats">
             <div class="about__stat">
-              <span class="about__stat-num">6+</span>
+              <span class="about__stat-num counter" data-target="7">0</span><span class="about__stat-num">+</span>
               <span class="about__stat-desc">Projects Built</span>
             </div>
             <div class="about__stat">
-              <span class="about__stat-num">4+</span>
+              <span class="about__stat-num counter" data-target="4">0</span><span class="about__stat-num">+</span>
               <span class="about__stat-desc">Languages Used</span>
             </div>
             <div class="about__stat">
@@ -81,238 +600,511 @@
             </div>
           </div>
 
-          <!-- Tech Stack -->
           <div class="about__stack">
             <p class="about__stack-label">Tech Stack</p>
             <div class="about__tags">
               <span class="about__tag">Dart / Flutter</span>
               <span class="about__tag">JavaScript</span>
+              <span class="about__tag">TypeScript</span>
               <span class="about__tag">C#</span>
               <span class="about__tag">C++</span>
+              <span class="about__tag">Python</span>
               <span class="about__tag">Machine Vision</span>
               <span class="about__tag">WinForms</span>
               <span class="about__tag">Firebase</span>
+              <span class="about__tag">Supabase</span>
               <span class="about__tag">Git &amp; GitHub</span>
+              <span class="about__tag">Vercel</span>
             </div>
           </div>
-
-          <a href="/assets/resume.pdf" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">
-            View Resume
-          </a>
+          <a href="/assets/resume.pdf" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">View Resume</a>
         </div>
-
       </div>
     </div>
   </section>
 
-  <style>
-    .about__stack { margin: 1.4rem 0 1.8rem; }
-    .about__stack-label {
-      font-size: 0.88rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      opacity: 0.55;
-      margin-bottom: 0.75rem;
-    }
-    .about__tags { display: flex; flex-wrap: wrap; gap: 12px; }
-    .about__tag {
-      font-size: 0.88rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 10px 20px;
-      border-radius: 2px;
-      border: 1px solid rgba(0, 212, 200, 0.35);
-      color: #00d4c8;
-      background: rgba(0, 212, 200, 0.08);
-    }
-    .about__stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin: 1.6rem 0;
-    }
-    .about__stat {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 16px 8px;
-      border: 1px solid rgba(0, 212, 200, 0.18);
-      border-radius: 4px;
-      background: rgba(0, 212, 200, 0.05);
-      text-align: center;
-    }
-    .about__stat-num {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 900;
-      font-size: 1.75rem;
-      color: #00d4c8;
-      line-height: 1;
-    }
-    .about__stat-desc {
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      opacity: 0.55;
-    }
-  </style>
-
+  <!-- ── PROJECTS ── -->
   <section id="projects">
     <div class="container">
       <h2 class="section-title reveal">Projects</h2>
 
-      <article class="project-card reveal">
+      <!-- Filter Tabs -->
+      <div class="project-filter reveal" data-delay="1">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="flutter">Flutter</button>
+        <button class="filter-btn" data-filter="cv">Machine Vision</button>
+        <button class="filter-btn" data-filter="web">Web</button>
+        <button class="filter-btn" data-filter="desktop">Desktop</button>
+        <button class="filter-btn" data-filter="ml">ML / AI</button>
+      </div>
+
+      <!-- 01 Health Habit Tracker -->
+      <article class="project-card reveal" data-delay="1" data-categories="flutter mobile">
         <div class="project__info">
           <div class="project__number">01</div>
           <h3 class="project__title">Health Habit Tracker</h3>
-          <p class="project__desc">
-            A cross-platform Flutter app for building and tracking daily healthy habits.
-            Features streak tracking, visual statistics with fl_chart, dark/light mode,
-            multi-profile support, and local data persistence via Hive, all wrapped in
-            a clean Material Design 3 interface.
-          </p>
+          <p class="project__desc">A cross-platform Flutter app for building and tracking daily healthy habits. Features streak tracking, visual statistics with fl_chart, dark/light mode, multi-profile support, and local data persistence via Hive — all in a clean Material Design 3 interface.</p>
+          <div class="project__stack">
+            <span class="project__tag">Dart</span>
+            <span class="project__tag">Flutter</span>
+            <span class="project__tag">Hive</span>
+            <span class="project__tag">fl_chart</span>
+            <span class="project__tag">Material 3</span>
+          </div>
           <div class="project__links">
-            <a href="#!" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
+            <a href="flutter-demo.html" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Demo</a>
             <a href="https://github.com/Cloii/HEALTH-HABIT-TRACKER" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
           </div>
         </div>
         <div class="project__img-wrap">
-          <a href="#!" target="_blank" rel="noreferrer">
-            <img src="assets/project1.jpg" alt="Health Habit Tracker screenshot" />
-          </a>
+          <span class="demo-badge">Flutter</span>
+          <img src="assets/project1.jpg" alt="Health Habit Tracker screenshot" />
         </div>
       </article>
 
-      <article class="project-card reveal">
+      <!-- 02 Shape Detector -->
+      <article class="project-card reveal" data-delay="1" data-categories="cv desktop">
         <div class="project__info">
           <div class="project__number">02</div>
           <h3 class="project__title">Shape Detector &amp; Image Editor</h3>
-          <p class="project__desc">
-            A machine vision desktop application built in C++ that detects geometric
-            shapes in real time using computer vision techniques. Includes image editing
-            tools for applying filters, transformations, and annotations, blending low-level
-            vision algorithms with a practical interactive interface.
-          </p>
+          <p class="project__desc">A machine vision desktop application built in C++ that detects geometric shapes in real time using computer vision techniques. Includes image editing tools for applying filters, transformations, and annotations.</p>
+          <div class="project__stack">
+            <span class="project__tag">C++</span>
+            <span class="project__tag">OpenCV</span>
+            <span class="project__tag">Machine Vision</span>
+            <span class="project__tag">Image Processing</span>
+          </div>
           <div class="project__links">
-            <a href="#!" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
-            <a href="https://github.com/Cloii/Machine-vision-Image-editor" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
+            <a href="https://github.com/Cloii/Machine-vision-Image-editor" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">Source Code</a>
           </div>
         </div>
         <div class="project__img-wrap">
-          <a href="#!" target="_blank" rel="noreferrer">
-            <img src="assets/project2.jpg" alt="Shape Detector screenshot" />
-          </a>
+          <span class="demo-badge">C++ / OpenCV</span>
+          <img src="assets/project2.jpg" alt="Shape Detector screenshot" />
         </div>
       </article>
 
-      <article class="project-card reveal">
+      <!-- 03 Brewly POS -->
+      <article class="project-card reveal" data-delay="1" data-categories="desktop">
         <div class="project__info">
           <div class="project__number">03</div>
           <h3 class="project__title">Brewly — Point of Sale System</h3>
-          <p class="project__desc">
-            A Windows desktop POS system built with C# and WinForms, designed for small
-            café and beverage businesses. Handles order management, product inventory,
-            billing, and sales reporting, demonstrating solid understanding of desktop
-            application architecture and database integration.
-          </p>
+          <p class="project__desc">A Windows desktop POS system built with C# and WinForms, designed for small café and beverage businesses. Handles order management, product inventory, billing, and sales reporting — solid desktop application architecture with database integration.</p>
+          <div class="project__stack">
+            <span class="project__tag">C#</span>
+            <span class="project__tag">WinForms</span>
+            <span class="project__tag">.NET</span>
+            <span class="project__tag">SQL</span>
+          </div>
           <div class="project__links">
-            <a href="#!" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
+            <a href="brewly-demo.html" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">Live Demo</a>
             <a href="https://github.com/Cloii/BrewlyWinForms" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
           </div>
         </div>
         <div class="project__img-wrap">
-          <a href="#!" target="_blank" rel="noreferrer">
-            <img src="assets/project3.jpg" alt="Brewly POS screenshot" />
-          </a>
+          <span class="demo-badge">Interactive Demo</span>
+          <img src="assets/project3.jpg" alt="Brewly POS screenshot" />
         </div>
       </article>
 
-      <article class="project-card reveal">
+      <!-- 04 Virtual Mouse -->
+      <article class="project-card reveal" data-delay="1" data-categories="cv desktop">
         <div class="project__info">
           <div class="project__number">04</div>
           <h3 class="project__title">Virtual Mouse</h3>
-          <p class="project__desc">
-            A hands-free virtual mouse controller that uses computer vision and hand
-            gesture recognition to move the cursor and perform clicks without touching
-            any hardware. Built in C++ using real-time webcam input, a fun exploration
-            of human-computer interaction through machine vision.
-          </p>
+          <p class="project__desc">A hands-free virtual mouse controller that uses computer vision and hand gesture recognition to move the cursor and perform clicks without touching any hardware. Built in C++ using real-time webcam input.</p>
+          <div class="project__stack">
+            <span class="project__tag">C++</span>
+            <span class="project__tag">OpenCV</span>
+            <span class="project__tag">Machine Vision</span>
+            <span class="project__tag">Gesture Recognition</span>
+          </div>
           <div class="project__links">
-            <a href="#!" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
-            <a href="https://github.com/Cloii/Virtual-mouse" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
+            <a href="https://github.com/Cloii/Virtual-mouse" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">Source Code</a>
           </div>
         </div>
         <div class="project__img-wrap">
-          <a href="#!" target="_blank" rel="noreferrer">
-            <img src="assets/project4.jpg" alt="Virtual Mouse screenshot" />
-          </a>
+          <span class="demo-badge">C++ / OpenCV</span>
+          <img src="assets/project4.jpg" alt="Virtual Mouse screenshot" />
         </div>
       </article>
 
-      <article class="project-card reveal">
+      <!-- 05 University Marketplace -->
+      <article class="project-card reveal" data-delay="1" data-categories="web">
         <div class="project__info">
           <div class="project__number">05</div>
           <h3 class="project__title">University Marketplace</h3>
-          <p class="project__desc">
-            A full-stack web marketplace built for university students to buy, sell, and
-            trade items within their campus community. Developed with JavaScript and
-            deployed live on Vercel, featuring product listings, search, and a clean,
-            responsive UI tailored for student use.
-          </p>
+          <p class="project__desc">A full-stack web marketplace built for university students to buy, sell, and trade items within their campus community. Features product listings, search, and a clean responsive UI. Deployed live on Vercel.</p>
+          <div class="project__stack">
+            <span class="project__tag">JavaScript</span>
+            <span class="project__tag">HTML &amp; CSS</span>
+            <span class="project__tag">Firebase</span>
+            <span class="project__tag">Vercel</span>
+          </div>
           <div class="project__links">
             <a href="https://ubthrifty.vercel.app/" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
             <a href="https://github.com/Cloii/uni-marketplace" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
           </div>
         </div>
         <div class="project__img-wrap">
-          <a href="https://ubthrifty.vercel.app/" target="_blank" rel="noreferrer">
-            <img src="assets/project5.jpg" alt="University Marketplace screenshot" />
-          </a>
+          <span class="demo-badge">Live</span>
+          <img src="assets/project5.jpg" alt="University Marketplace screenshot" />
+        </div>
+      </article>
+
+      <!-- 06 Virtual Campus Companion -->
+      <article class="project-card reveal" data-delay="1" data-categories="web">
+        <div class="project__info">
+          <div class="project__number">06</div>
+          <h3 class="project__title">Virtual Campus Companion</h3>
+          <p class="project__desc">A full-stack web app that lets students and visitors explore the university through an interactive 360° campus tour — think Google Street View, but on campus. Includes a directory of facilities for easy navigation.</p>
+          <div class="project__stack">
+            <span class="project__tag">TypeScript</span>
+            <span class="project__tag">Vite</span>
+            <span class="project__tag">Supabase</span>
+            <span class="project__tag">360° Panorama</span>
+            <span class="project__tag">Vercel</span>
+          </div>
+          <div class="project__links">
+            <a href="https://ubvcc.vercel.app/" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
+            <a href="https://github.com/Cloii/Vcc4" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
+          </div>
+        </div>
+        <div class="project__img-wrap">
+          <span class="demo-badge">Live</span>
+          <img src="assets/project6.jpg" alt="Virtual Campus Companion screenshot" />
+        </div>
+      </article>
+
+      <!-- 07 Phone Damage Detector -->
+      <article class="project-card reveal" data-delay="1" data-categories="ml web">
+        <div class="project__info">
+          <div class="project__number">07</div>
+          <h3 class="project__title">Phone Damage Detector</h3>
+          <p class="project__desc">An AI-powered web app that analyzes uploaded phone images to automatically detect and classify surface damage — cracks, scratches, and screen breaks — using a trained TensorFlow model deployed as a responsive web interface.</p>
+          <div class="project__stack">
+            <span class="project__tag">Python</span>
+            <span class="project__tag">TensorFlow</span>
+            <span class="project__tag">TypeScript</span>
+            <span class="project__tag">Vite</span>
+            <span class="project__tag">Computer Vision</span>
+            <span class="project__tag">Vercel</span>
+          </div>
+          <div class="project__links">
+            <a href="https://phone-damage-detector.vercel.app/" target="_blank" rel="noreferrer" class="cta-btn cta-btn--hero">See Live</a>
+            <a href="https://github.com/Cloii/Phone-damage-detector" target="_blank" rel="noreferrer" class="cta-btn cta-btn--resume">Source Code</a>
+          </div>
+        </div>
+        <div class="project__img-wrap">
+          <span class="demo-badge">Live + AI</span>
+          <img src="assets/project7.png" alt="Phone Damage Detector screenshot" />
         </div>
       </article>
 
     </div>
   </section>
 
+  <!-- ── CONTACT ── -->
   <section id="contact">
     <div class="container">
       <h2 class="section-title reveal">Contact</h2>
-      <p class="contact__text reveal">
-        I'm currently open to new opportunities. Whether you have a question, a project
-        idea, or just want to say hi — my inbox is always open!
+      <p class="contact__text reveal" data-delay="1">
+        I'm currently open to new opportunities. Whether you have a question, a project idea, or just want to say hi — my inbox is always open!
       </p>
-      <div class="reveal">
+      <div class="reveal" data-delay="2">
         <a href="mailto:bilclinthd@gmail.com" class="cta-btn cta-btn--resume">Say Hello</a>
       </div>
     </div>
   </section>
 
+  <!-- ── FOOTER ── -->
   <footer>
     <div class="container">
       <div class="footer__social">
-        <a href="#" target="_blank" rel="noreferrer" aria-label="Twitter / X">
-          <i class="fa-brands fa-x-twitter"></i>
-        </a>
-        <a href="#" target="_blank" rel="noreferrer" aria-label="Discord">
-          <i class="fa-brands fa-discord"></i>
-        </a>
-        <a href="https://github.com/Cloii" target="_blank" rel="noreferrer" aria-label="GitHub">
-          <i class="fa-brands fa-github"></i>
-        </a>
-        <a href="#" target="_blank" rel="noreferrer" aria-label="Telegram">
-          <i class="fa-brands fa-telegram"></i>
-        </a>
+        <a href="#" target="_blank" rel="noreferrer" aria-label="Twitter/X"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" target="_blank" rel="noreferrer" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+        <a href="https://github.com/Cloii" target="_blank" rel="noreferrer" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a href="#" target="_blank" rel="noreferrer" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
       </div>
       <p class="footer__copy">
-        &copy; <span id="year"></span> — Designed &amp; Built by
-        <a href="#hero">Bil Clinth</a>
+        &copy; <span id="year"></span> — Designed &amp; Built by <a href="#hero">Bil Clinth</a>
       </p>
     </div>
   </footer>
 
-  <!-- Vite entry point — DO NOT remove -->
-  <script type="module" src="/src/main.ts"></script>
+  <script>
+  /* ====================================================
+     SPACE CANVAS
+  ==================================================== */
+  (function () {
+    const canvas = document.getElementById('spaceCanvas');
+    const ctx    = canvas.getContext('2d');
+    let W, H, stars = [], nebulae = [];
+    let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+    const STAR_COUNT = 320, NEBULA_COUNT = 6;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    function rand(a,b) { return Math.random()*(b-a)+a; }
+    function initStars() {
+      stars = [];
+      for (let i=0;i<STAR_COUNT;i++) stars.push({ x:rand(0,W), y:rand(0,H), r:rand(.3,1.8), speed:rand(.03,.12), layer:Math.floor(rand(0,3)), alpha:rand(.4,1), tw:rand(0,Math.PI*2) });
+    }
+    function initNebulae() {
+      nebulae = [];
+      const cols = ['rgba(2,170,176,','rgba(0,205,172,','rgba(0,100,140,','rgba(20,0,60,','rgba(0,180,160,','rgba(10,40,80,'];
+      for (let i=0;i<NEBULA_COUNT;i++) nebulae.push({ x:rand(.05,.95), y:rand(.05,.95), rx:rand(200,420), ry:rand(120,280), col:cols[i%cols.length], alpha:rand(.04,.12), layer:Math.floor(rand(0,3)) });
+    }
+    const lf = [.006,.014,.028];
+    let t = 0;
+    function draw() {
+      mouseX += (targetX-mouseX)*.06; mouseY += (targetY-mouseY)*.06;
+      ctx.clearRect(0,0,W,H);
+      const bg = ctx.createLinearGradient(0,0,W,H);
+      bg.addColorStop(0,'#090d12'); bg.addColorStop(.5,'#0b1118'); bg.addColorStop(1,'#080c10');
+      ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+      nebulae.forEach(n => {
+        const ox=(mouseX-W/2)*lf[n.layer], oy=(mouseY-H/2)*lf[n.layer];
+        const gx=n.x*W+ox, gy=n.y*H+oy;
+        const g=ctx.createRadialGradient(gx,gy,0,gx,gy,Math.max(n.rx,n.ry));
+        g.addColorStop(0,n.col+(n.alpha*1.6).toFixed(3)+')'); g.addColorStop(.5,n.col+(n.alpha*.5).toFixed(3)+')'); g.addColorStop(1,n.col+'0)');
+        ctx.save(); ctx.translate(gx,gy); ctx.scale(n.rx/Math.max(n.rx,n.ry),n.ry/Math.max(n.rx,n.ry)); ctx.translate(-gx,-gy);
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(gx,gy,Math.max(n.rx,n.ry),0,Math.PI*2); ctx.fill(); ctx.restore();
+      });
+      t+=.008;
+      stars.forEach(s => {
+        const ox=(mouseX-W/2)*lf[s.layer], oy=(mouseY-H/2)*lf[s.layer];
+        const sx=s.x+ox, sy=s.y+oy;
+        const tw=.5+.5*Math.sin(t*1.4+s.tw), alpha=s.alpha*(.6+.4*tw);
+        if (s.r>1.2) {
+          const glow=ctx.createRadialGradient(sx,sy,0,sx,sy,s.r*3.5);
+          glow.addColorStop(0,`rgba(160,240,240,${(alpha*.25).toFixed(3)})`); glow.addColorStop(1,'rgba(0,0,0,0)');
+          ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(sx,sy,s.r*3.5,0,Math.PI*2); ctx.fill();
+        }
+        ctx.fillStyle=`rgba(200,240,255,${alpha.toFixed(3)})`; ctx.beginPath(); ctx.arc(sx,sy,s.r,0,Math.PI*2); ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    window.addEventListener('resize',()=>{ resize(); initStars(); });
+    window.addEventListener('mousemove',e=>{ targetX=e.clientX; targetY=e.clientY; });
+    resize(); initStars(); initNebulae(); draw();
+  })();
 
+  /* ====================================================
+     CUSTOM CURSOR
+  ==================================================== */
+  (function () {
+    const dot  = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    if (!dot || !ring) return;
+    let rx=0, ry=0, dx=0, dy=0;
+    document.addEventListener('mousemove', e => {
+      dx = e.clientX; dy = e.clientY;
+      dot.style.left = dx+'px'; dot.style.top = dy+'px';
+    });
+    function lerp(a,b,t){ return a+(b-a)*t; }
+    function tick() {
+      rx = lerp(rx,dx,.12); ry = lerp(ry,dy,.12);
+      ring.style.left = rx+'px'; ring.style.top = ry+'px';
+      requestAnimationFrame(tick);
+    }
+    tick();
+    const hoverEls = document.querySelectorAll('a, button, .about__tag, .project__tag, .filter-btn');
+    hoverEls.forEach(el => {
+      el.addEventListener('mouseenter',()=>{ dot.classList.add('hover'); ring.classList.add('hover'); });
+      el.addEventListener('mouseleave',()=>{ dot.classList.remove('hover'); ring.classList.remove('hover'); });
+    });
+    document.addEventListener('mousedown',()=>dot.classList.add('click'));
+    document.addEventListener('mouseup',()=>dot.classList.remove('click'));
+  })();
+
+  /* ====================================================
+     SCROLL PROGRESS BAR
+  ==================================================== */
+  (function () {
+    const bar = document.getElementById('scrollProgress');
+    window.addEventListener('scroll',()=>{
+      const scrolled = window.scrollY;
+      const total = document.body.scrollHeight - window.innerHeight;
+      bar.style.width = (scrolled / total * 100) + '%';
+    });
+  })();
+
+  /* ====================================================
+     NAVBAR — scrolled class + active links
+  ==================================================== */
+  (function () {
+    const navbar = document.getElementById('navbar');
+    const links  = document.querySelectorAll('.navbar__links a[data-section]');
+    const ham    = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    window.addEventListener('scroll',()=>{
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+      // active section
+      const sections = ['about','projects','contact'];
+      let current = '';
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && window.scrollY >= el.offsetTop - 200) current = id;
+      });
+      links.forEach(a => {
+        a.classList.toggle('active', a.dataset.section === current);
+      });
+    });
+    ham.addEventListener('click',()=>{
+      ham.classList.toggle('open'); navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click',()=>{ ham.classList.remove('open'); navLinks.classList.remove('open'); });
+    });
+  })();
+
+  /* ====================================================
+     HERO PARALLAX
+  ==================================================== */
+  (function () {
+    const slow = document.getElementById('parallaxSlow');
+    const mid  = document.getElementById('parallaxMid');
+    const fast = document.getElementById('parallaxFast');
+    const txt  = document.querySelector('.hero__content');
+    let mx=0, my=0, tx=0, ty=0;
+    window.addEventListener('mousemove',e=>{ tx=(e.clientX/innerWidth-.5)*2; ty=(e.clientY/innerHeight-.5)*2; });
+    function tick() {
+      mx+=(tx-mx)*.07; my+=(ty-my)*.07;
+      if(slow) slow.style.transform=`translate(${mx*-8}px,${my*-8}px)`;
+      if(mid)  mid.style.transform=`translate(${mx*-18}px,${my*-18}px)`;
+      if(fast) fast.style.transform=`translate(${mx*-30}px,${my*-30}px)`;
+      if(txt)  txt.style.transform=`translate(${mx*6}px,${my*6}px)`;
+      requestAnimationFrame(tick);
+    }
+    tick();
+  })();
+
+  /* ====================================================
+     TYPEWRITER
+  ==================================================== */
+  (function () {
+    const el = document.getElementById('typewriterText');
+    if (!el) return;
+    const phrases = [
+      'a Junior Developer.',
+      'a Problem Solver.',
+      'an Unknown Developer.'
+    ];
+    let pi=0, ci=0, deleting=false;
+    function tick() {
+      const phrase = phrases[pi];
+      if (!deleting) {
+        el.textContent = phrase.slice(0, ci+1);
+        ci++;
+        if (ci === phrase.length) { deleting=true; setTimeout(tick,1800); return; }
+        setTimeout(tick, 90);
+      } else {
+        el.textContent = phrase.slice(0, ci-1);
+        ci--;
+        if (ci === 0) { deleting=false; pi=(pi+1)%phrases.length; setTimeout(tick,400); return; }
+        setTimeout(tick, 45);
+      }
+    }
+    setTimeout(tick, 1000);
+  })();
+
+  /* ====================================================
+     SCROLL REVEAL
+  ==================================================== */
+  (function () {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+    }, { threshold: .15 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  })();
+
+  /* ====================================================
+     ANIMATED COUNTERS
+  ==================================================== */
+  (function () {
+    const counters = document.querySelectorAll('.counter');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = +el.dataset.target;
+        const dur = 1200;
+        const step = target / (dur / 16);
+        let cur = 0;
+        const id = setInterval(()=>{
+          cur += step;
+          if (cur >= target) { cur = target; clearInterval(id); }
+          el.textContent = Math.floor(cur);
+        }, 16);
+        observer.unobserve(el);
+      });
+    }, { threshold: .5 });
+    counters.forEach(c => observer.observe(c));
+  })();
+
+  /* ====================================================
+     BUTTON RIPPLE
+  ==================================================== */
+  document.querySelectorAll('.cta-btn, .filter-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const r = document.createElement('span');
+      r.className = 'ripple';
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;`;
+      this.appendChild(r);
+      setTimeout(()=>r.remove(), 600);
+    });
+  });
+
+  /* ====================================================
+     PROJECT 3D TILT
+  ==================================================== */
+  document.querySelectorAll('.project__img-wrap').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width  - .5;
+      const y = (e.clientY - rect.top)  / rect.height - .5;
+      card.style.transform = `perspective(600px) rotateY(${x*10}deg) rotateX(${-y*8}deg) scale(1.02)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) scale(1)';
+      card.style.transition = 'transform .5s ease, box-shadow .4s ease';
+    });
+    card.addEventListener('mouseenter', () => { card.style.transition = 'box-shadow .4s ease'; });
+  });
+
+  /* ====================================================
+     PROJECT FILTER
+  ==================================================== */
+  (function () {
+    const btns  = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.project-card');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        cards.forEach(card => {
+          const cats = (card.dataset.categories || '').split(' ');
+          const show = filter === 'all' || cats.includes(filter);
+          if (show) {
+            card.classList.remove('hidden');
+            card.style.animation = 'none';
+            card.offsetHeight; // reflow
+            card.style.animation = '';
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+  })();
+
+  /* ====================================================
+     YEAR
+  ==================================================== */
+  document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

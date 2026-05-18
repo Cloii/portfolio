@@ -4,12 +4,12 @@
 
    TABLE OF CONTENTS
    -----------------
-   1.  Theme Variables     ← ✏️ Edit colors here
+   1.  Theme Variables
    2.  Reset & Base
    3.  Utilities
    4.  Buttons
    5.  Navbar
-   6.  Hero
+   6.  Hero  (+ Space Canvas + Parallax)
    7.  About
    8.  Projects
    9.  Contact
@@ -22,21 +22,22 @@
 
 /* ================================================
    1. THEME VARIABLES
-   ✏️ EDIT: Change these two colors to restyle everything
    ================================================ */
 :root {
   --primary-color:   #02aab0;
   --secondary-color: #00cdac;
 
-  --dark-bg:     #1d1d1d;
-  --section-bg:  #272727;
-  --text-light:  #ffffff;
-  --text-muted:  #d0d0d0;
+  --dark-bg:     #090d12;
+  --section-bg:  #0e1620;
+  --card-bg:     #111920;
+  --text-light:  #e8f4f8;
+  --text-muted:  #8faab8;
 
   --font-display: 'Montserrat', sans-serif;
   --font-body:    'Source Sans 3', sans-serif;
 
   --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  --glow: 0 0 24px rgba(2,170,176,0.35), 0 0 60px rgba(2,170,176,0.1);
 }
 
 
@@ -53,7 +54,7 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 62.5%; /* 1rem = 10px */
+  font-size: 62.5%;
 }
 
 body {
@@ -110,6 +111,7 @@ img {
   background: var(--gradient);
   margin: 1.5rem auto 0;
   border-radius: 2px;
+  box-shadow: var(--glow);
 }
 
 
@@ -140,7 +142,7 @@ img {
   border-color: transparent;
   color: #fff;
   transform: translateY(-3px);
-  box-shadow: 0 1rem 2rem rgba(2, 170, 176, 0.3);
+  box-shadow: var(--glow);
 }
 
 .cta-btn--resume {
@@ -154,7 +156,7 @@ img {
   border-color: var(--primary-color);
   color: var(--primary-color);
   transform: translateY(-3px);
-  box-shadow: 0 1rem 2rem rgba(2, 170, 176, 0.3);
+  box-shadow: var(--glow);
 }
 
 
@@ -171,8 +173,10 @@ img {
 }
 
 .navbar.scrolled {
-  background: rgba(29, 29, 29, 0.97);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  background: rgba(9, 13, 18, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 32px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(2,170,176,0.12);
 }
 
 .navbar .container {
@@ -189,6 +193,7 @@ img {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(2,170,176,0.5));
 }
 
 .navbar__links {
@@ -216,6 +221,7 @@ img {
   height: 2px;
   background: var(--gradient);
   transition: width 0.3s;
+  box-shadow: var(--glow);
 }
 
 .navbar__links a:hover { color: #fff; }
@@ -242,29 +248,75 @@ img {
 
 
 /* ================================================
-   6. HERO
+   6. HERO  +  Space Canvas  +  Parallax
    ================================================ */
+
+/* Full-page space canvas sits behind everything */
+#spaceCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Parallax DOM layers (purely decorative rings/halos) */
+.parallax-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.parallax-layer--slow::before,
+.parallax-layer--mid::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(2,170,176,0.08);
+}
+
+.parallax-layer--slow::before {
+  width: 70vmax; height: 70vmax;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(2,170,176,0.04) 0%, transparent 65%);
+}
+
+.parallax-layer--mid::after {
+  width: 40vmax; height: 40vmax;
+  top: 30%; right: -8%;
+  background: radial-gradient(circle, rgba(0,205,172,0.06) 0%, transparent 60%);
+}
+
+.parallax-layer--fast::before {
+  content: '';
+  position: absolute;
+  width: 24vmax; height: 24vmax;
+  bottom: 10%; left: 5%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(2,100,140,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+
 #hero {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(180deg, #111 0%, var(--dark-bg) 100%);
   position: relative;
   overflow: hidden;
+  background: transparent; /* canvas handles bg */
+  z-index: 1;
 }
 
-#hero::before {
-  content: '';
-  position: absolute;
-  top: -20%;
-  right: -10%;
-  width: 60rem;
-  height: 60rem;
-  background: radial-gradient(circle, rgba(2, 170, 176, 0.08) 0%, transparent 70%);
-  pointer-events: none;
+.hero__content {
+  padding: 12rem 0 8rem;
+  position: relative;
+  z-index: 2;
+  will-change: transform;
 }
-
-.hero__content { padding: 12rem 0 8rem; }
 
 .hero__greeting {
   font-family: var(--font-body);
@@ -275,6 +327,7 @@ img {
   text-transform: uppercase;
   opacity: 0;
   animation: fadeUp 0.8s ease forwards 0.2s;
+  text-shadow: 0 0 20px rgba(2,170,176,0.5);
 }
 
 .hero__title {
@@ -310,6 +363,16 @@ img {
 #about {
   padding: 10rem 0;
   background-color: var(--section-bg);
+  position: relative;
+  z-index: 2;
+}
+
+#about::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(9,13,18,0.6) 0%, var(--section-bg) 12%);
+  pointer-events: none;
 }
 
 .about__grid {
@@ -317,6 +380,7 @@ img {
   grid-template-columns: 1fr 1.5fr;
   gap: 6rem;
   align-items: center;
+  position: relative;
 }
 
 .about__image-wrap { position: relative; }
@@ -327,12 +391,16 @@ img {
   inset: -1.5rem;
   border: 2px solid var(--primary-color);
   border-radius: 6px;
-  opacity: 0.4;
+  opacity: 0.3;
   z-index: 0;
   transition: opacity 0.3s;
+  box-shadow: 0 0 30px rgba(2,170,176,0.15);
 }
 
-.about__image-wrap:hover::before { opacity: 0.8; }
+.about__image-wrap:hover::before {
+  opacity: 0.7;
+  box-shadow: var(--glow);
+}
 
 .about__image-wrap img {
   position: relative;
@@ -355,6 +423,7 @@ img {
   text-transform: uppercase;
   letter-spacing: 0.15rem;
   margin-bottom: 2rem;
+  text-shadow: 0 0 16px rgba(2,170,176,0.4);
 }
 
 .about__text p {
@@ -364,6 +433,71 @@ img {
   margin-bottom: 2rem;
 }
 
+.about__stack { margin: 1.4rem 0 1.8rem; }
+.about__stack-label {
+  font-size: 0.88rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: 0.75rem;
+}
+.about__tags { display: flex; flex-wrap: wrap; gap: 10px; }
+.about__tag {
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: 3px;
+  border: 1px solid rgba(2, 170, 176, 0.3);
+  color: var(--primary-color);
+  background: rgba(2, 170, 176, 0.07);
+  transition: all 0.25s ease;
+}
+.about__tag:hover {
+  background: rgba(2,170,176,0.18);
+  border-color: rgba(2,170,176,0.7);
+  box-shadow: 0 0 12px rgba(2,170,176,0.25);
+}
+
+.about__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 1.6rem 0;
+}
+.about__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 8px;
+  border: 1px solid rgba(2, 170, 176, 0.15);
+  border-radius: 6px;
+  background: rgba(2, 170, 176, 0.04);
+  text-align: center;
+  transition: all 0.3s;
+}
+.about__stat:hover {
+  border-color: rgba(2,170,176,0.45);
+  background: rgba(2,170,176,0.09);
+  box-shadow: 0 0 18px rgba(2,170,176,0.15);
+}
+.about__stat-num {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 1.75rem;
+  color: var(--primary-color);
+  line-height: 1;
+  text-shadow: 0 0 14px rgba(2,170,176,0.5);
+}
+.about__stat-desc {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
 
 /* ================================================
    8. PROJECTS
@@ -371,6 +505,18 @@ img {
 #projects {
   padding: 10rem 0;
   background-color: var(--dark-bg);
+  position: relative;
+  z-index: 2;
+}
+
+#projects::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 30% at 80% 20%, rgba(2,170,176,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 25% at 15% 75%, rgba(0,205,172,0.03) 0%, transparent 65%);
+  pointer-events: none;
 }
 
 .project-card {
@@ -379,10 +525,10 @@ img {
   gap: 4rem;
   align-items: center;
   margin-bottom: 8rem;
+  position: relative;
 }
 
 .project-card:last-child { margin-bottom: 0; }
-
 .project-card:nth-child(even) { direction: rtl; }
 .project-card:nth-child(even) > * { direction: ltr; }
 
@@ -391,7 +537,7 @@ img {
   font-size: 8rem;
   font-weight: 900;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.04);
+  color: rgba(2,170,176,0.06);
   margin-bottom: -2rem;
   user-select: none;
 }
@@ -401,13 +547,41 @@ img {
   font-size: 2.4rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
+  transition: color 0.3s;
 }
+
+.project-card:hover .project__title { color: var(--primary-color); }
 
 .project__desc {
   font-size: 1.6rem;
   color: var(--text-muted);
   line-height: 1.8;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+/* ── project tech stack tags ── */
+.project__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0.6rem 0 1.6rem;
+}
+.project__tag {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(2, 170, 176, 0.28);
+  color: var(--primary-color);
+  background: rgba(2, 170, 176, 0.06);
+  transition: all 0.25s ease;
+}
+.project__tag:hover {
+  background: rgba(2,170,176,0.16);
+  border-color: rgba(2,170,176,0.65);
+  box-shadow: 0 0 10px rgba(2,170,176,0.2);
 }
 
 .project__links {
@@ -419,7 +593,7 @@ img {
 .project__img-wrap {
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(2,170,176,0.08);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   position: relative;
 }
@@ -428,14 +602,14 @@ img {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(2, 170, 176, 0.15), rgba(0, 205, 172, 0.05));
+  background: linear-gradient(135deg, rgba(2,170,176,0.12), rgba(0,205,172,0.04));
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.35s;
 }
 
 .project__img-wrap:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 3rem 6rem rgba(0, 0, 0, 0.6);
+  transform: translateY(-10px);
+  box-shadow: 0 3rem 6rem rgba(0, 0, 0, 0.7), var(--glow);
 }
 
 .project__img-wrap:hover::after { opacity: 1; }
@@ -448,7 +622,7 @@ img {
   transition: transform 0.4s ease;
 }
 
-.project__img-wrap:hover img { transform: scale(1.04); }
+.project__img-wrap:hover img { transform: scale(1.05); }
 
 
 /* ================================================
@@ -458,6 +632,16 @@ img {
   padding: 10rem 0;
   background-color: var(--section-bg);
   text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+#contact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(2,170,176,0.05) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .contact__text {
@@ -473,9 +657,12 @@ img {
    10. FOOTER
    ================================================ */
 footer {
-  background-color: #111;
+  background-color: #060a0f;
   padding: 4rem 0;
   text-align: center;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(2,170,176,0.1);
 }
 
 .footer__social {
@@ -489,7 +676,7 @@ footer {
   width: 4.5rem;
   height: 4.5rem;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -503,11 +690,12 @@ footer {
   border-color: transparent;
   color: #fff;
   transform: translateY(-4px);
+  box-shadow: var(--glow);
 }
 
 .footer__copy {
   font-size: 1.4rem;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .footer__copy a {
@@ -541,6 +729,11 @@ footer {
   to   { opacity: 1; transform: translateY(0);    }
 }
 
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(2,170,176,0.2); }
+  50%       { box-shadow: 0 0 22px rgba(2,170,176,0.5); }
+}
+
 
 /* ================================================
    13. RESPONSIVE
@@ -555,7 +748,8 @@ footer {
     top: 100%;
     left: 0;
     width: 100%;
-    background: rgba(29, 29, 29, 0.98);
+    background: rgba(9, 13, 18, 0.98);
+    backdrop-filter: blur(12px);
     padding: 2rem;
     gap: 2rem;
   }
@@ -576,6 +770,5 @@ footer {
   }
 
   .project-card:nth-child(even) > * { direction: ltr; }
-
   .project__number { font-size: 5rem; }
 }
